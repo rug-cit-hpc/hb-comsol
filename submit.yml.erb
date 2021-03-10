@@ -1,0 +1,10 @@
+---
+batch_connect:
+  template: "vnc"
+script:
+  queue_name: <%= custom_queue.blank? ? "short" : custom_queue.strip %>
+  native:
+    - "-c"
+    - "<%= bc_num_slots %>"
+    - "-t"
+    - "<%= wall_time %>"

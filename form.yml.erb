@@ -1,0 +1,69 @@
+<%-
+  cmd = "sinfo -ho %R"
+  begin
+    output, status = Open3.capture2e(cmd)
+    if status.success?
+      partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
+    else
+      raise output
+    end
+  rescue => e
+    partitions = []
+    error = e.message.strip
+  end
+-%>
+
+---
+cluster:
+  - "peregrine"
+
+form:
+  - version
+  - custom_queue
+  - wall_time
+  - bc_num_hours
+  - bc_num_slots
+  - num_cores
+  - node_type
+  - bc_vnc_resolution
+
+attributes:
+  wall_time:
+    widget: "text_field"
+    
+  node_type: ""
+  
+  num_cores:
+    widget: "number_field"
+    label: "Number of cores"
+    value: 1
+    id: 'num_cores'
+    help: |
+      Number of cores per node.
+    min: 0
+    max: 24
+    step: 1
+    
+  bc_vnc_resolution:
+    required: true
+
+  custom_queue:
+    label: Partition
+    help: Please select a partition from the drop-down menu.
+  <%- if partitions.blank? -%>
+    widget: text_field
+  <%- else -%>
+    widget: select
+    options:
+    <%- partitions.each do |q| -%>
+      - [ "<%= q %>", "<%= q %>" ]
+    <%- end -%>
+  <%- end -%>
+
+  version:
+    widget: select
+    label: "COMSOL Multiphysics version"
+    help: "This defines the version of COMSOL Multiphysics you want to load."
+    options:
+      - ["5.5",  "COMSOL/5.5"]
+      - ["5.4",  "COMSOL/5.4"]
