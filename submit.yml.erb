@@ -5,6 +5,6 @@ script:
   queue_name: <%= custom_queue.blank? ? "short" : custom_queue.strip %>
   native:
     - "-c"
-    - "<%= bc_num_slots %>"
+    - "<%= num_cores.to_i %>"
     - "-t"
     - "<%= wall_time %>"

@@ -21,14 +21,14 @@ form:
   - version
   - custom_queue
   - wall_time
-  - bc_num_hours
-  - bc_num_slots
   - num_cores
   - node_type
   - bc_vnc_resolution
 
 attributes:
   wall_time:
+    label: Walltime
+    help: "Please give the wall time in the SLURM format, D:HH:MM:SS"
     widget: "text_field"
     
   node_type: ""
