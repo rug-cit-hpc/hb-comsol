@@ -30,7 +30,8 @@ cd "${HOME}"
 #
 
 # Load the required environment
-module load <%= context.version %> Java/1.8.0_162 GCCcore/6.4.0
+module load <%= context.version %>
+#Java/1.8.0_162 GCCcore/6.4.0
 
 # Launch COMSOL Multiphysics
 <%- if gpu -%>

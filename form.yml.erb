@@ -1,69 +1,90 @@
-<%-
-  cmd = "sinfo -ho %R"
-  begin
-    output, status = Open3.capture2e(cmd)
-    if status.success?
-      partitions = output.split("\n").map(&:strip).reject(&:blank?).sort
-    else
-      raise output
-    end
-  rescue => e
-    partitions = []
-    error = e.message.strip
-  end
--%>
-
 ---
 cluster:
   - "peregrine"
 
 form:
-  - version
-  - custom_queue
-  - wall_time
-  - num_cores
   - node_type
+  - version
+  - walltime
+  - num_cores
+  - memory
   - bc_vnc_resolution
+  - pg_email_on_started
+  - pg_email_user
 
 attributes:
-  wall_time:
-    label: Walltime
-    help: "Please give the wall time in the SLURM format, D:HH:MM:SS"
+  node_type:
+    label: Node Type
+    help: |
+      Select the type of node you would like to use. For information on the different options, please see
+      [our wiki](https://wiki.hpc.rug.nl/peregrine/introduction/cluster_description#compute_nodes)
+    widget: select
+    options:
+      - [
+          "Regular", "regular",
+          data-min-num-cores: 1,
+          data-max-num-cores: 28,
+          data-max-memory: 128,
+        ]
+      - [ 
+          "Himem", "himem",
+          data-min-num-cores: 1,
+          data-max-num-cores: 42,
+          data-max-memory: 2048,
+        ]
+      - [ 
+          "GELIFES", "gelifes",
+          data-min-num-cores: 1,
+          data-max-num-cores: 64,
+          data-max-memory: 512,
+        ]
+
+  version:
+    widget: "select"
+    label: "COMSOL Multiphysics version"
+    help: |
+      This defines the version of COMSOL Multiphysics you want to load.
+    options:
+      - ["5.5",  "COMSOL/5.5"]
+
+  walltime:
+    label: Wall time
+    help: "Please give the wall time in the SLURM format, D-HH:MM:SS"
     widget: "text_field"
     
-  node_type: ""
-  
-  num_cores:
-    widget: "number_field"
-    label: "Number of cores"
-    value: 1
-    id: 'num_cores'
+  memory:
+    label: Memory
     help: |
-      Number of cores per node.
-    min: 0
+      Amount of memory requested, in GB
+    widget: 'number_field'
+    value: 2
+    min: 1
+    max: 128
+    step: 1
+
+  num_cores:
+    label: Number of CPU cores
+    help: |
+      Select the number of CPU cores.
+    widget: number_field
+    value: 2
+    min: 1
     max: 24
     step: 1
     
   bc_vnc_resolution:
     required: true
 
-  custom_queue:
-    label: Partition
-    help: Please select a partition from the drop-down menu.
-  <%- if partitions.blank? -%>
-    widget: text_field
-  <%- else -%>
-    widget: select
+  pg_email_on_started:
+    label: "Email notification"
+    help: |
+      Would you like to be notified via email when your session starts?
+    widget: "select"
     options:
-    <%- partitions.each do |q| -%>
-      - [ "<%= q %>", "<%= q %>" ]
-    <%- end -%>
-  <%- end -%>
+      - ["No", "no", data-hide-pg-email-user: true]
+      - ["Yes", "yes"]
 
-  version:
-    widget: select
-    label: "COMSOL Multiphysics version"
-    help: "This defines the version of COMSOL Multiphysics you want to load."
-    options:
-      - ["5.5",  "COMSOL/5.5"]
-      - ["5.4",  "COMSOL/5.4"]
+  pg_email_user:
+    label: Email
+    help: "Your email for notifications"
+    widget: "text_field"
