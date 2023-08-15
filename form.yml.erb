@@ -1,6 +1,15 @@
+<%-
+    paths = []
+    paths << Pathname.new("/scratch/#{User.new.name}")
+
+    projects = User.new.groups.map(&:name).grep(/^hb-./)
+
+    paths.concat projects.map { |p| Pathname.new("/scratch/#{p}")  }
+-%>
+
 ---
 cluster:
-  - "peregrine"
+  - "login1"
 
 form:
   - node_type
@@ -9,35 +18,21 @@ form:
   - num_cores
   - memory
   - bc_vnc_resolution
-  - pg_email_on_started
-  - pg_email_user
 
 attributes:
   node_type:
     label: Node Type
     help: |
       Select the type of node you would like to use. For information on the different options, please see
-      [our wiki](https://wiki.hpc.rug.nl/peregrine/introduction/cluster_description#compute_nodes)
+      [our wiki](https://wiki.hpc.rug.nl/habrok/introduction/cluster_description#compute_nodes)
     widget: select
     options:
-      - [
-          "Regular", "regular",
-          data-min-num-cores: 1,
-          data-max-num-cores: 28,
-          data-max-memory: 128,
-        ]
-      - [ 
-          "Himem", "himem",
-          data-min-num-cores: 1,
-          data-max-num-cores: 42,
-          data-max-memory: 2048,
-        ]
-      - [ 
-          "GELIFES", "gelifes",
-          data-min-num-cores: 1,
-          data-max-num-cores: 64,
-          data-max-memory: 512,
-        ]
+      - [ "Regular", "regular" ]
+      - [ "Himem", "himem" ]
+      # - [ "GPU (A100_1)", "gpua100" ]
+      # - [ "GPU (A100_2)", "gpua100.20gb" ]
+      - [ "GELIFES", "gelifes" ]
+      # - [ "GPU (V100)", "gpuv100" ]
 
   version:
     widget: "select"
@@ -45,7 +40,6 @@ attributes:
     help: |
       This defines the version of COMSOL Multiphysics you want to load.
     options:
-      - ["5.5",  "COMSOL/5.5"]
       - ["6.0",  "COMSOL/6.0"]
 
   walltime:
@@ -55,37 +49,22 @@ attributes:
     
   memory:
     label: Memory
-    help: |
-      Amount of memory requested, in GB
+    help: Amount of memory requested, in GB
     widget: 'number_field'
     value: 2
     min: 1
-    max: 128
     step: 1
 
   num_cores:
+    widget: number_field
     label: Number of CPU cores
+    value: 1
+    id: 'num_cores'
     help: |
       Select the number of CPU cores.
-    widget: number_field
-    value: 2
     min: 1
-    max: 24
     step: 1
-    
+    max: 128
+
   bc_vnc_resolution:
     required: true
-
-  pg_email_on_started:
-    label: "Email notification"
-    help: |
-      Would you like to be notified via email when your session starts?
-    widget: "select"
-    options:
-      - ["No", "no", data-hide-pg-email-user: true]
-      - ["Yes", "yes"]
-
-  pg_email_user:
-    label: Email
-    help: "Your email for notifications"
-    widget: "text_field"

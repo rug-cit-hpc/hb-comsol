@@ -10,13 +10,15 @@
     time = 86400 * days + 3600 * hours + 60 * minutes + seconds
     
     if node_type == "regular" 
-        if time < 1800
-            partition = 'short'
-        elsif time >= 1800
-            partition = 'regular'
+        if time < 14400
+            partition = 'regularshort'
+        # elsif time >= 14400 and time < 259200
+        #     partition = 'regularmedium'
+        else
+            partition = 'regularlong'
         end
     elsif node_type == 'himem'
-        partition = 'himem'
+        partition = 'himemmedium'
     elsif node_type == 'gelifes'
         partition = 'gelifes'
     end
@@ -27,13 +29,9 @@ batch_connect:
 script:
   queue_name: <%= partition %>
   native:
-    <%- if pg_email_on_started and not pg_email_user.blank? -%>
-    - "--mail-type=BEGIN"
-    - "--mail-user=<%= pg_email_user %>"
-    <%- end -%>
-    - "-c"
-    - "<%= num_cores.blank? ? 1 : num_cores.to_i %>"
     - "--mem"
     - "<%= memory.blank? ? 2000 : memory.to_i * 1000 %>"
+    - "-c"
+    - "<%= num_cores.blank? ? 1 : num_cores.to_i %>"
     - "-t"
     - "<%= walltime %>"
