@@ -8,22 +8,10 @@ module purge
 # Set working directory to home directory
 cd "${HOME}"
 
-#
-# Launch Xfce Window Manager and Panel
-#
-
-(
-  export SEND_256_COLORS_TO_REMOTE=1
-  export XDG_CONFIG_HOME="<%= session.staged_root.join("config") %>"
-  export XDG_DATA_HOME="<%= session.staged_root.join("share") %>"
-  export XDG_CACHE_HOME="$(mktemp -d)"
-  module restore
-  set -x
-  xfwm4 --compositor=off --daemon --sm-client-disable
-  xsetroot -solid "#D3D3D3"
-  xfsettingsd --sm-client-disable
-  xfce4-panel --sm-client-disable
-) &
+# Launch Mate Window Manager and Panel
+marco --no-composite --no-force-fullscreen --sm-disable &
+# mate-panel blocks, but does not work reliably when launched in the same subshell as marco
+mate-panel &
 
 #
 # Start COMSOL Multiphysics
