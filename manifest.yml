@@ -6,4 +6,5 @@ role: batch_connect
 description: "This app will launch a [COMSOL Multiphysics] GUI on the [Habrok cluster].
   You\r\nwill be able to interact with the COMSOL GUI through a VNC session.\r\n\r\n[COMSOL
   Multiphysics]: https://www.comsol.com\r\n[Habrok cluster]: https://wiki.hpc.rug.nl/habrok/start\r\n"
+version: 0.1
 icon: ''
