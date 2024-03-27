@@ -8,13 +8,12 @@
 -%>
 
 ---
-cluster:
-  - "login1"
+cluster: "login1"
 
 form:
   - node_type
   - version
-  - walltime
+  - num_hours
   - num_cores
   - memory
   - bc_vnc_resolution
@@ -23,16 +22,12 @@ attributes:
   node_type:
     label: Node Type
     help: |
-      Select the type of node you would like to use. For information on the different options, please see
+      Select the type of node you would like to use. For information on the different options, please see 
       [our wiki](https://wiki.hpc.rug.nl/habrok/introduction/cluster_description#compute_nodes)
     widget: select
     options:
       - [ "Regular", "regular" ]
       - [ "Himem", "himem" ]
-      # - [ "GPU (A100_1)", "gpua100" ]
-      # - [ "GPU (A100_2)", "gpua100.20gb" ]
-      - [ "GELIFES", "gelifes" ]
-      # - [ "GPU (V100)", "gpuv100" ]
 
   version:
     widget: "select"
@@ -42,11 +37,15 @@ attributes:
     options:
       - ["6.0",  "COMSOL/6.0"]
 
-  walltime:
-    label: Wall time
-    help: "Please give the wall time in the SLURM format, D-HH:MM:SS"
-    widget: "text_field"
-    
+  num_hours:
+    label: Number of hours
+    widget: 'number_field'
+    help: "Please give the maximum wall time in hours"
+    value: 2
+    min: 1
+    step: 1
+    max: 12
+
   memory:
     label: Memory
     help: Amount of memory requested, in GB

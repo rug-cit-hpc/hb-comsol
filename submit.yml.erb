@@ -1,26 +1,24 @@
 <%-
     cores = num_cores.to_i
     
-    time_match = /((\d*)-)?(\d*):(\d*):(\d*)/.match(walltime)
-    days = time_match[2].to_i
-    hours = time_match[3].to_i
-    minutes = time_match[4].to_i
-    seconds = time_match[5].to_i
-    
-    time = 86400 * days + 3600 * hours + 60 * minutes + seconds
+    hours = num_hours.to_i
     
     if node_type == "regular" 
-        if time < 14400
+        if hours <= 8
             partition = 'regularshort'
-        # elsif time >= 14400 and time < 259200
-        #     partition = 'regularmedium'
+        elsif hours > 8 and hours <= 72
+            partition = 'regularmedium'
         else
             partition = 'regularlong'
         end
     elsif node_type == 'himem'
-        partition = 'himemmedium'
-    elsif node_type == 'gelifes'
-        partition = 'gelifes'
+        if hours <= 8
+            partition = 'himemshort'
+        elsif hours > 8 and hours <= 72
+            partition = 'himemmedium'
+        else
+            partition = 'himemlong'
+        end
     end
 -%>
 ---
@@ -28,10 +26,11 @@ batch_connect:
   template: "vnc"
 script:
   queue_name: <%= partition %>
+  wall_time: "<%= hours * 3600 %>"
   native:
+    # Hardcode the number of nodes to 1
+    - "-N 1"
     - "--mem"
     - "<%= memory.blank? ? 2000 : memory.to_i * 1000 %>"
     - "-c"
     - "<%= num_cores.blank? ? 1 : num_cores.to_i %>"
-    - "-t"
-    - "<%= walltime %>"
