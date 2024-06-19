@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-<%- gpu = context.node_type.include?("vis") -%>
-
 # Clean the environment
 module purge
 
@@ -19,16 +17,8 @@ mate-panel &
 
 # Load the required environment
 module load <%= context.auto_modules_COMSOL %>
-#Java/1.8.0_162 GCCcore/6.4.0
 
 # Launch COMSOL Multiphysics
-<%- if gpu -%>
-module load intel/16.0.3 virtualgl
-module list
-set -x
-vglrun comsol -3drend sw
-<%- else -%>
 module list
 set -x
 comsol -3drend sw
-<%- end -%>
