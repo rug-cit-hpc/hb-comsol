@@ -12,13 +12,18 @@ cluster: "login1"
 
 form:
   - node_type
-  - version
+  - auto_modules_COMSOL
   - num_hours
   - num_cores
   - memory
   - bc_vnc_resolution
 
 attributes:
+  auto_modules_COMSOL:
+    label: "COMSOL Multiphysics Version"
+    help: |
+      Select one of the COMSOL Multiphysics versions from the list.
+    default: false
   node_type:
     label: Node Type
     help: |
