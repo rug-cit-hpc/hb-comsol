@@ -1,3 +1,6 @@
+# Repository moved
+The repository for this project has moved to https://gitrepo.service.rug.nl/cit-hpc/habrok/hb-comsol.
+
 # Batch Connect - OSC COMSOL Multiphysics
 
 ![GitHub Release](https://img.shields.io/github/release/osc/bc_osc_comsol.svg)
